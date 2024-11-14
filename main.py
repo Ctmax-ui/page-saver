@@ -2,75 +2,61 @@ import os,re
 import sys
 from pathlib import Path
 
-
-os.system('cls' if os.name == 'nt' else 'clear')
-
+from utils.systemcheck import systemCheck
 files = os.listdir(".")
 
-if not files.__contains__('index.html'):
-    print('index.html is not present\nCreating index file...')
-    html_template = '''<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
-</head>
-<body>
-    
-</body>
-</html>'''
-    with open('./index.html', 'w') as f:
-        f.write(html_template)
-        pass
-
-if not files.__contains__('root'):
-    print('root folder is not present\nCreating root folder...')
-    os.mkdir('root')
-    
+systemCheck()
 
 # p = Path('./index.html')
 # print(p.read_text())
 print(os.listdir('./root'))
 
-userInp =input('>>')
+def showHelpMenu():
+        os.system('cls' if os.name == 'nt' else 'clear')
+        # print("\n" * 100)
+        print('''
+            ╦ ╦┌─┐┬  ┌─┐┌─┐┌┬┐┌─┐  ┌┬┐┌─┐  ╔═╗┌─┐┌─┐┌─┐  ╔═╗┌─┐┬  ┬┌─┐┬─┐
+            ║║║├┤ │  │  │ ││││├┤    │ │ │  ╠═╝├─┤│ ┬├┤   ╚═╗├─┤└┐┌┘├┤ ├┬┘
+            ╚╩╝└─┘┴─┘└─┘└─┘┴ ┴└─┘   ┴ └─┘  ╩  ┴ ┴└─┘└─┘  ╚═╝┴ ┴ └┘ └─┘┴└─
+            
+            1 : save page            # save the element inside an html file.
+            2 : save by online       # save pages from the internet by url.
+            3 : delete pages         # delete the pages.
+            4 : create/show category # create category to save the files in organize way.
+            5 : 
+            6 : render data for html # render all of the files in index page.
+            7 : open in browser      # open in the brwser.
+            8 :
+       help/9 : show the help menu.
+      enter/0 : exit                 # exit the program.
+            ''')
+showHelpMenu()
+while True:
+    import utils.modulesFunc as modulesFunc
+    import utils.categoryFunc as categoryFunc
+    import utils.renderFunc as renderFunc
 
-if True: #userInp:
-    userElemPasteInput=None
-    userNewFileNameInput = None
-    print("Paste your text and press Ctrl+D (or Ctrl+Z on Windows) to submit:")
-    while True:
-        userElemPasteInput = sys.stdin.read().strip()
-        if userElemPasteInput:
-            break
-        print("Input element be empty. Try again.")
-    while True:
-        userNewFileNameInput = input("Please assign a name for the file: ").strip()
-        if userNewFileNameInput:
-            break
-        print("Input name be empty. Try again.")   
-        
-    cleaned_html = re.sub(r'\s(class|style)="[^"]*"', '', userElemPasteInput)
-    userInputToHtmlTemplate = f'''
-          <!DOCTYPE html>
-            <html lang="en">
-                <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>{userNewFileNameInput}</title>
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-                <link href="../styles/style.css" rel="stylesheet">
-                </head>
-                <body class="text-break p-3">
-                <a href="../index.html" style="font-size:3rem">⬅ Go Back</a>
-                {cleaned_html}
-                
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-                </body>
-            </html>
-          '''
-    with open(f'./root/{userNewFileNameInput.replace(' ', '-')}.html', 'w',encoding='utf-8') as f:
-        f.write(userInputToHtmlTemplate)
-        pass
-    print('Writing Complete.')
+    userInputMainMenu=input('main >> ').strip()
+    match userInputMainMenu:
+        case '1':
+            modulesFunc.storeElements()
+        case '2':
+            print('upcoming features, save by url.')
+        case '3':
+            print('upcoming features, delete pages.')
+        case '4':
+            categoryFunc.main()
+        case '5':
+            print('upcoming features.')    
+        case '6':
+            renderFunc.main()
+        case '7':
+            print('upcoming features.')
+        case '8':
+            print('upcoming features.')        
+        case 'help' | '9':
+            showHelpMenu()
+        case '' | '0':
+            break   
+
     
