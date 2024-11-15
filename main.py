@@ -20,7 +20,7 @@ def showHelpMenu():
             ╚╩╝└─┘┴─┘└─┘└─┘┴ ┴└─┘   ┴ └─┘  ╩  ┴ ┴└─┘└─┘  ╚═╝┴ ┴ └┘ └─┘┴└─
             
             1 : save page            # save the element inside an html file.
-            2 : save by online       # save pages from the internet by url.
+            2 : save by URL          # save pages from the internet by url.
             3 : delete pages         # delete the pages.
             4 : create/show category # create category to save the files in organize way.
             5 : 
@@ -35,13 +35,14 @@ while True:
     import utils.modulesFunc as modulesFunc
     import utils.categoryFunc as categoryFunc
     import utils.renderFunc as renderFunc
+    import utils.savePageFromUrl as savePageFromUrl
 
     userInputMainMenu=input('main >> ').strip()
     match userInputMainMenu:
         case '1':
             modulesFunc.storeElements()
         case '2':
-            print('upcoming features, save by url.')
+            savePageFromUrl.main()
         case '3':
             print('upcoming features, delete pages.')
         case '4':
