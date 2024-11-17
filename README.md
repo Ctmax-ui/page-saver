@@ -21,5 +21,5 @@
    ```bash
     python main.py
    ```
-
+- Also you need selenium for the advance stuff.
    
