@@ -8,19 +8,27 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from datetime import datetime
 
+with open(Path('./config.json')) as f:
+    config = json.load(f)
+
+
 def saveWithSelenium():
-    brave_path = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
-    driver_path = r"C:\tools\chromedriver.exe"
+    brave_path = config["browser_path"]
+    # brave_path = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+    driver_path = Path("./driver/chromedriver.exe")
 
     options = webdriver.ChromeOptions()
     options.binary_location = brave_path
-    options.add_argument(r"user-data-dir=C:\Users\Dave\AppData\Local\BraveSoftware\Brave-Browser\User Data")
+    # options.add_argument(r"user-data-dir=C:\Users\<your-userName>\AppData\Local\BraveSoftware\Brave-Browser\User Data")
+    options.add_argument(f"user-data-dir={config["browser_userdata"]}")
     options.add_argument("--profile-directory=Default")
     options.add_argument("--log-level=1")
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    # options.add_argument("--headless")
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--disable-dev-shm-usage")
+    
+    if(config["headless_webdriver"]):
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
 
     page_title=None
     exit_program = False
@@ -49,18 +57,32 @@ def saveWithSelenium():
         return
 
     start_time = time.time()
+    css_selector = input('Do you have any css selector in perticuler default selector is body "enter".\ncss-selector >>').replace(' ', '') or "body"
     service = Service(driver_path)
     print('Running the driver...')
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
+        
         print('Going to the destination page...')
         driver.get(url)
-
-        print('Waiting for the body element to appear...')
-        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+        
+        print('Waiting for the element to appear...',css_selector)
+        
+        if(css_selector.count('.') == 1):
+            elements = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
+        else: 
+            elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, css_selector)))
+        
+        # print(type(elements))
+        
         page_title = driver.title
-        body_html = element.get_attribute("outerHTML")
+        
+        body_html = ""
+        for element in elements:
+            print(element)
+            body_html += element.get_attribute("outerHTML")
+
     except Exception as e:
         print("Error finding element:", e)
     finally:
@@ -71,7 +93,7 @@ def saveWithSelenium():
     fileSaveParsed(body_html, page_title)
     return
  
- 
+
 
 def saveWithNormal():
     exit_program = False
@@ -97,7 +119,7 @@ def saveWithNormal():
         
     if exit_program:
         return
-        
+    css_selector = input('Do you have any css selector in perticuler default selector is body "enter".\ncss-selector >>') or "body"   
     try:
         response = requests.get(url, {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
@@ -108,7 +130,7 @@ def saveWithNormal():
         soup = BeautifulSoup(response.text, 'html.parser')
         print('Page copied successfully.')
         page_title = soup.title.string if soup.title else None
-        body_content = soup.body.decode_contents() if soup.body else None
+        body_content = soup.body.decode_contents() if soup.select_one(css_selector) else None
         if body_content:
             fileSaveParsed(body_content,page_title)
         else:

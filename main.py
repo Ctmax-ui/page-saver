@@ -55,7 +55,7 @@ while True:
             print('upcoming features.')
         case '8':
             print('upcoming features.')        
-        case 'help' | '9':
+        case 'help' | '9' | 'cls' | 'clear':
             showHelpMenu()
         case '' | '0':
             break   
