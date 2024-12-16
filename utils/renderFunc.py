@@ -3,12 +3,8 @@ from pathlib import Path
 from datetime import datetime
 from utils.systemcheck import systemCheck
 
-
-
-
 def main():
     systemCheck()
-    
     jsonPth = Path('./data/data.json')
     jsonData =[]
     count = 0

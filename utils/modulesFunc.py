@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-
 def storeElements():
     import utils.categoryFunc as categoryFunc
     userElemPasteInput=None
@@ -45,18 +44,17 @@ def storeElements():
                 </body>
             </html>
           '''
-
     
     while True:
         categoryName = categoryFunc.main()
         root_dir = Path(f'./root/{categoryName}')
         break
  
- 
-    newFile = root_dir/(userNewFileNameInput.replace(' ', '-')+f'-{datetime.now().strftime("%Y-%m-%d_%H-%M")}.html')
+    cleaned_filename = re.sub(r'[<>:"/\\|?*\s]', '-', userNewFileNameInput)
+    newFile = root_dir/(cleaned_filename+f'-{datetime.now().strftime("%Y-%m-%d_%H-%M")}.html')
     with open(newFile, 'w',encoding='utf-8') as f:
         f.write(userInputToHtmlTemplate)
     
-    print(f'file {userNewFileNameInput.replace(' ', '-')}-{datetime.now().strftime("%Y-%m-%d_%H-%M")}.html created successfully.')
+    print(f'file {cleaned_filename}-{datetime.now().strftime("%Y-%m-%d_%H-%M")}.html created successfully.')
 
  
