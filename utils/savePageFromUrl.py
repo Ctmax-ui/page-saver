@@ -3,14 +3,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import os, re, sys, json, requests, time
+import re, json, requests, time
 from pathlib import Path
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 with open(Path('./config.json')) as f:
     config = json.load(f)
-
 
 def saveWithSelenium():
     brave_path = config["browser_path"]
@@ -50,8 +49,7 @@ def saveWithSelenium():
             
         if re.match(url_pattern, url):
             break
-        print('invalid url, please check!')
-        
+        print('invalid url, please check!')  
         
     if exit_program:
         return
@@ -61,23 +59,17 @@ def saveWithSelenium():
     service = Service(driver_path)
     print('Running the driver...')
     driver = webdriver.Chrome(service=service, options=options)
-
     try:
-        
         print('Going to the destination page...')
         driver.get(url)
-        
         print('Waiting for the element to appear...',css_selector)
-        
         if(css_selector.count('.') == 1):
             elements = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
         else: 
             elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, css_selector)))
-        
         # print(type(elements))
         
         page_title = driver.title
-        
         body_html = ""
         for element in elements:
             print(element)
@@ -92,8 +84,6 @@ def saveWithSelenium():
     print(f"Total time taken: {total_time:.2f} seconds")
     fileSaveParsed(body_html, page_title)
     return
- 
-
 
 def saveWithNormal():
     exit_program = False
@@ -140,8 +130,7 @@ def saveWithNormal():
         status_code = e.response.status_code if e.response else "No Response"
         # print(f"An error occurred: {status_code}")
         print(f'Site fetcher failed with status Code: {e.response}')
-    return
-    
+    return 
     
 def fileSaveParsed(body_html, page_title=None):
     removed_scripts_tag = re.sub(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>', '', str(body_html))
@@ -179,7 +168,6 @@ def fileSaveParsed(body_html, page_title=None):
                 <link href="../../styles/style.css" rel="stylesheet">
                 </head>
                 <body class="text-break p-3">
-                <a href="../../index.html" class="h1">⇦ Go Back</a>
                 <div class="clearfix mb-5"></div>
                 {body_cleaned_html}
                 

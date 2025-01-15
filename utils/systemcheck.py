@@ -1,5 +1,4 @@
-import os,re
-import sys
+import os
 from pathlib import Path
 
 os.system('cls' if os.name == 'nt' else 'clear')

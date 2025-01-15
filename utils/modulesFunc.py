@@ -1,4 +1,4 @@
-import os,re
+import re
 import sys
 from pathlib import Path
 from datetime import datetime
